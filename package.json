@@ -1,0 +1,31 @@
+{
+  "name": "online-shop",
+  "version": "1.0.0",
+  "description": "developing an online shop using node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "start-server": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maryamsadat-tabatabaei/online-shop.git"
+  },
+  "author": "Maryam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maryamsadat-tabatabaei/online-shop/issues"
+  },
+  "homepage": "https://github.com/maryamsadat-tabatabaei/online-shop#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "express-handlebars": "^6.0.6",
+    "pug": "^3.0.2"
+  }
+}
