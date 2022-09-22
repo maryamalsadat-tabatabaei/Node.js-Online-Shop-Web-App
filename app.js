@@ -5,59 +5,26 @@ const bodyParser = require("body-parser");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const errorController = require("./controllers/error");
-
-const sequelize = require("./util/database");
+const mongoConnect = require("./util/database").mongoConnect;
 const User = require("./models/user");
-const Product = require("./models/product");
-const Cart = require("./models/cart");
-const CartItem = require("./models//cart-item");
-const Order = require("./models/order");
-const OrderItem = require("./models/order-item");
-
 const app = express();
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
-
 app.use((req, res, next) => {
-  User.findByPk(1)
+  User.findById("5baa2528563f16379fc8a610")
     .then((user) => {
-      req.user = user;
+      req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })
     .catch((err) => console.log(err));
 });
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(errorController.getError);
 
-Product.belongsTo(User, {
-  constraints: true,
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-User.hasMany(Product);
-User.hasOne(Cart);
-Cart.belongsTo(User);
-Cart.belongsToMany(Product, { through: CartItem });
-Product.belongsToMany(Cart, { through: CartItem });
-Order.belongsTo(User);
-User.hasMany(Order);
-Order.belongsToMany(Product, { through: OrderItem });
-
-sequelize
-  // .sync({ force: true })
-  .sync()
-  .then((result) => {
-    return User.findByPk(1);
-  })
-  .then((user) => {
-    return !user
-      ? User.create({ name: "Maryam", email: "test@test.com" })
-      : user;
-  })
-  .then((user) => user.createCart())
-  .then((cart) => app.listen(8000))
-  .catch((err) => console.log(err));
+mongoConnect(() => app.listen(8000));
