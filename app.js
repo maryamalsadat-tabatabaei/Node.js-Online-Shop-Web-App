@@ -13,8 +13,9 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use((req, res, next) => {
-  User.findById("5baa2528563f16379fc8a610")
+  User.findById("632d381e5146d1a6e8db6214")
     .then((user) => {
+      console.log(user);
       req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })
@@ -27,4 +28,6 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(errorController.getError);
 
-mongoConnect(() => app.listen(8000));
+mongoConnect(() => {
+  app.listen(3000);
+});
