@@ -1,21 +1,40 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 const path = require("path");
 const bodyParser = require("body-parser");
 
 require("dotenv").config();
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const authRoutes = require("./routes/auth");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
 const app = express();
+const MONGODB_URI = `mongodb+srv://maryam-tb:${process.env.MONGO_DB_PASSWORD}@node-project.6mr8s0d.mongodb.net/test?retryWrites=true&w=majority`;
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: "sessions",
+});
 
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+app.use(
+  session({
+    secret: "my secret string",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
+);
 app.use((req, res, next) => {
-  User.findById("632d73426a6e61fc06080e2e")
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
     .then((user) => {
       // console.log(user);
       req.user = user;
@@ -28,11 +47,11 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 app.use(errorController.getError);
+
 mongoose
-  .connect(
-    `mongodb+srv://maryam-tb:${process.env.MONGO_DB_PASSWORD}@node-project.6mr8s0d.mongodb.net/test?retryWrites=true&w=majority`
-  )
+  .connect(MONGODB_URI)
   .then((result) => {
     console.log("connected!");
     User.findOne()
