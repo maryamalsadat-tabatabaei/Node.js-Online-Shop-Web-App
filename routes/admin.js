@@ -13,10 +13,18 @@ router.get("/add-product", isAuth, adminController.getAddProduct);
 router.post(
   "/add-product",
   [
-    body("title").isString().isLength({ min: 3 }).trim(),
-    body("imageUrl").isURL(),
+    body("title", "Title must be string and at least 3 character.")
+      .isString()
+      .isLength({ min: 3 })
+      .trim(),
+    body("imageUrl", "Image must be a url").isURL(),
     body("price").isFloat(),
-    body("description").isLength({ min: 10, max: 400 }).trim(),
+    body(
+      "description",
+      "description must be at least 10 and at last 400 character"
+    )
+      .isLength({ min: 10, max: 400 })
+      .trim(),
   ],
   isAuth,
   adminController.postAddProduct
@@ -29,10 +37,18 @@ router.post("/edit-product", isAuth, adminController.postEditProduct);
 router.post(
   "/delete-product",
   [
-    body("title").isString().isLength({ min: 3 }).trim(),
-    body("imageUrl").isURL(),
+    body("title", "Title must be string and at least 3 character.")
+      .isString()
+      .isLength({ min: 3 })
+      .trim(),
+    body("imageUrl", "Image must be a url").isURL(),
     body("price").isFloat(),
-    body("description").isLength({ min: 10, max: 400 }).trim(),
+    body(
+      "description",
+      "description must be at least 10 and at last 400 character"
+    )
+      .isLength({ min: 10, max: 400 })
+      .trim(),
   ],
   isAuth,
   adminController.postDeleteProduct
