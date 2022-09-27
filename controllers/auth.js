@@ -71,6 +71,7 @@ exports.postLogin = (req, res, next) => {
           if (doMatch) {
             req.session.isLoggedIn = true;
             req.session.user = user;
+            console.log("logged in");
             return req.session.save((err) => {
               console.log(err);
               res.redirect("/");
