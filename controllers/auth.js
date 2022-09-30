@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport(
 
 exports.getLogin = (req, res, next) => {
   let errorMessage = req.flash("error");
-  if (errorMessage.lenght > 0) {
+  if (errorMessage.length > 0) {
     errorMessage = errorMessage[0];
   } else {
     errorMessage = null;
@@ -71,9 +71,9 @@ exports.postLogin = (req, res, next) => {
           if (doMatch) {
             req.session.isLoggedIn = true;
             req.session.user = user;
-            console.log("logged in");
             return req.session.save((err) => {
               console.log(err);
+              console.log("logged in", req.session);
               res.redirect("/");
             });
           }
@@ -109,7 +109,7 @@ exports.postLogout = (req, res, next) => {
 
 exports.getSignup = (req, res, next) => {
   let errorMessage = req.flash("error");
-  if (errorMessage.lenght > 0) {
+  if (errorMessage.length > 0) {
     errorMessage = errorMessage[0];
   } else {
     errorMessage = null;
@@ -152,7 +152,7 @@ exports.postSignup = (req, res, next) => {
   bcrypt
     .hash(password, 12)
     .then((hashedPassword) => {
-      new User({
+      return new User({
         email,
         password: hashedPassword,
         cart: { items: [] },
@@ -191,7 +191,6 @@ exports.getResetPassword = (req, res, next) => {
 exports.postResetPassword = (req, res, next) => {
   crypto.randomBytes(32, (err, buffer) => {
     if (err) {
-      req.flash("error", "Please try again.");
       console.log(err);
       return res.redirect("/reset-password");
     }

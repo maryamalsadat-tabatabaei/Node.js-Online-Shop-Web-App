@@ -70,6 +70,6 @@ router.post("/reset-password", authController.postResetPassword);
 
 router.get("/reset-password/:token", authController.getNewPassword);
 
-router.post("/reset-password/:token", authController.postNewPassword);
+router.post("/new-password", authController.postNewPassword);
 
 module.exports = router;

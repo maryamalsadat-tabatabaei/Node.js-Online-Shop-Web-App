@@ -17,30 +17,7 @@ router.post(
       .isString()
       .isLength({ min: 3 })
       .trim(),
-    body("price").isFloat(),
-    body(
-      "description",
-      "description must be at least 10 and at last 400 character"
-    )
-      .isLength({ min: 10, max: 400 })
-      .trim(),
-  ],
-  // isAuth,
-  adminController.postAddProduct
-);
-
-router.get("/edit-product/:productId", isAuth, adminController.getEditProduct);
-
-router.post("/edit-product", isAuth, adminController.postEditProduct);
-
-router.post(
-  "/delete-product",
-  [
-    body("title", "Title must be string and at least 3 character.")
-      .isString()
-      .isLength({ min: 3 })
-      .trim(),
-    body("price").isFloat(),
+    body("price", "Price is required").isFloat(),
     body(
       "description",
       "description must be at least 10 and at last 400 character"
@@ -49,7 +26,30 @@ router.post(
       .trim(),
   ],
   isAuth,
-  adminController.postDeleteProduct
+  adminController.postAddProduct
 );
+
+router.get("/edit-product/:productId", isAuth, adminController.getEditProduct);
+
+router.post(
+  "/edit-product",
+  [
+    body("title", "Title must be string and at least 3 character.")
+      .isString()
+      .isLength({ min: 3 })
+      .trim(),
+    body("price", "Price is required").isFloat(),
+    body(
+      "description",
+      "description must be at least 10 and at last 400 character"
+    )
+      .isLength({ min: 10, max: 400 })
+      .trim(),
+  ],
+  isAuth,
+  adminController.postEditProduct
+);
+
+router.post("/delete-product", isAuth, adminController.postDeleteProduct);
 
 module.exports = router;

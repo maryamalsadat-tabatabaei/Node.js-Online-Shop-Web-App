@@ -15,12 +15,12 @@ const authRoutes = require("./routes/auth");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
-const app = express();
-const MONGODB_URI = `mongodb+srv://maryam-tb:${process.env.MONGO_DB_PASSWORD}@node-project.6mr8s0d.mongodb.net/test?retryWrites=true&w=majority`;
+const MONGODB_URI = `mongodb+srv://maryam-tb:${process.env.MONGO_DB_PASSWORD}@node-project.6mr8s0d.mongodb.net/test`;
 const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
+const app = express();
 const csrfProtection = csrf();
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -54,7 +54,7 @@ app.use(
     secret: "my secret string",
     resave: false,
     saveUninitialized: false,
-    store: store,
+    store,
   })
 );
 app.use(csrfProtection);
@@ -84,15 +84,16 @@ app.use(shopRoutes);
 app.use(authRoutes);
 app.get("/500", errorController.get500);
 app.use(errorController.getError);
-// app.use((errror, req, res, next) => {
-//   // res.status(error.httpStatusCode).render(...);
-//   // res.redirect('/500');
-//   res.status(500).render("500", {
-//     pageTitle: "Error!",
-//     path: "/500",
-// isAuthenticated: req.session.isLoggedIn,
-//   });
-// });
+app.use((error, req, res, next) => {
+  // res.status(error.httpStatusCode).render(...);
+  // res.redirect('/500');
+  console.log("req.session.isLoggedIn", req.session);
+  res.status(500).render("500", {
+    pageTitle: "Error!",
+    path: "/500",
+    isAuthenticated: req.session.isLoggedIn,
+  });
+});
 
 mongoose
   .connect(MONGODB_URI)

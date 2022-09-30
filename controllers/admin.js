@@ -37,21 +37,8 @@ exports.postAddProduct = (req, res, next) => {
   const userId = req.user;
 
   console.log(image);
-  if (!image) {
-    return res.status(422).render("admin/edit-product", {
-      path: "/admin/add-product",
-      pageTitle: "Add product",
-      editing: false,
-      hasError: true,
-      product: {
-        title,
-        price,
-        description,
-      },
-      errorMessage: "Attached file is not an image.",
-      validationErrors: [],
-    });
-  }
+  console.log("req", req, userId);
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors.array());
@@ -67,6 +54,21 @@ exports.postAddProduct = (req, res, next) => {
       },
       errorMessage: errors.array()[0].msg,
       validationErrors: errors.array(),
+    });
+  }
+  if (!image) {
+    return res.status(422).render("admin/edit-product", {
+      path: "/admin/add-product",
+      pageTitle: "Add product",
+      editing: false,
+      hasError: true,
+      product: {
+        title,
+        price,
+        description,
+      },
+      errorMessage: "Attached file is not an image.",
+      validationErrors: [],
     });
   }
   const imageUrl = image.path;
@@ -148,7 +150,6 @@ exports.postEditProduct = (req, res, next) => {
       hasError: true,
       product: {
         title: updatedTitle,
-        imageUrl: updatedImageUrl,
         price: updatedPrice,
         description: updatedDescription,
         _id: prodId,
@@ -175,7 +176,11 @@ exports.postEditProduct = (req, res, next) => {
         res.redirect("/admin/products");
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postDeleteProduct = (req, res, next) => {

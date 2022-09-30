@@ -23,7 +23,7 @@ exports.getProducts = (req, res, next) => {
       res.render("shop/product-list", {
         prods: products,
         pageTitle: "All Products",
-        path: "/products",
+        path: "/product-list",
         currentPage: page,
         previousPage: page - 1,
         nextPage: page + 1,
