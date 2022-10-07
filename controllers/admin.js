@@ -36,9 +36,6 @@ exports.postAddProduct = (req, res, next) => {
   const description = req.body.description;
   const userId = req.user;
 
-  console.log(image);
-  console.log("req", req, userId);
-
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors.array());
@@ -183,8 +180,8 @@ exports.postEditProduct = (req, res, next) => {
     });
 };
 
-exports.postDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
+exports.deleteProduct = (req, res, next) => {
+  const prodId = req.params.productId;
   Product.findById(prodId)
     .then((product) => {
       if (!product) {
@@ -195,11 +192,10 @@ exports.postDeleteProduct = (req, res, next) => {
     })
     .then(() => {
       console.log("DESTROYED PRODUCT");
-      res.redirect("/admin/products");
+      // res.redirect("/admin/products");
+      res.status(200).json({ message: "success!" });
     })
-    .catch((err) => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    });
+    .catch((err) =>
+      res.status(500).json({ message: "Deleting product failed." })
+    );
 };

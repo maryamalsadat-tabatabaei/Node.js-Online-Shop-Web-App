@@ -27,7 +27,7 @@
                                     </p>
                                 </div>
                                 <div class="card__actions">
-                                    <a href="/product-list/<%= product._id %>" class="btn">Details</a>
+                                    <a href="/products/<%= product._id %>" class="btn">Details</a>
                                     <% if (isAuthenticated) { %>
                                         <%- include('../includes/add-to-cart.ejs', {product: product}) %>
                                     <% } %>
@@ -35,8 +35,7 @@
                             </article>
                             <% } %>
                     </div>
-                    <%- include('../includes/pagination.ejs', {currentPage, nextPage, previousPage, lastPage, hasNextPage, hasPreviousPage}) %>
-
+                    <%- include('../includes/pagination.ejs', {currentPage: currentPage, nextPage: nextPage, previousPage: previousPage, lastPage: lastPage, hasNextPage: hasNextPage, hasPreviousPage: hasPreviousPage}) %>
                     <% } else { %>
                         <h1>No Products Found!</h1>
                         <% } %>
