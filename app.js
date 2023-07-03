@@ -1,12 +1,18 @@
+const fs = require("fs");
+const path = require("path");
+const https = require("https");
+
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
-const path = require("path");
 const bodyParser = require("body-parser");
 const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
+const helmet = require("helmet");
+const compression = require("compression");
+const morgan = require("morgan");
 
 require("dotenv").config();
 const adminRoutes = require("./routes/admin");
@@ -15,7 +21,7 @@ const authRoutes = require("./routes/auth");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
-const MONGODB_URI = `mongodb+srv://maryam-tb:${process.env.MONGO_DB_PASSWORD}@node-project.6mr8s0d.mongodb.net/test`;
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@node-project.6mr8s0d.mongodb.net/${process.env.MONGO_DB_COLLECTION}`;
 const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
@@ -27,7 +33,7 @@ const fileStorage = multer.diskStorage({
     cb(null, "images");
   },
   filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + "-" + file.originalname);
+    cb(null, file.originalname);
   },
 });
 const fileFilter = (req, file, cb) => {
@@ -41,17 +47,25 @@ const fileFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" }
+);
 
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+app.use(helmet());
+app.use(compression());
+app.use(morgan("combines", { stream: accessLogStream }));
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
+app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 app.use(
   session({
-    secret: "my secret string",
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
     store,
@@ -84,21 +98,21 @@ app.use(shopRoutes);
 app.use(authRoutes);
 app.get("/500", errorController.get500);
 app.use(errorController.getError);
-// app.use((error, req, res, next) => {
-//   // res.status(error.httpStatusCode).render(...);
-//   // res.redirect('/500');
-//   console.log("req.session.isLoggedIn", req.session);
-//   res.status(500).render("500", {
-//     pageTitle: "Error!",
-//     path: "/500",
-//     isAuthenticated: req.session.isLoggedIn,
-//   });
-// });
+app.use((err, req, res, next) => {
+  // res.status(error.httpStatusCode).render(...);
+  // res.redirect('/500');
+  // console.log("req.session.isLoggedIn", req.session);
+  // res.status(500).render("500", {
+  //   pageTitle: "Error!",
+  //   path: "/500",
+  //   isAuthenticated: req.session.isLoggedIn,
+  // });
+});
 
 mongoose
   .connect(MONGODB_URI)
   .then((result) => {
     console.log("connected!");
-    app.listen(8000);
+    app.listen(process.env.MONGO_DB_PORT);
   })
   .catch((err) => console.log(err));

@@ -48,7 +48,7 @@ exports.getProductDetail = (req, res, next) => {
       res.render("shop/product-detail", {
         product,
         pageTitle: product.title,
-        path: "/product-list",
+        path: "/product-list/:prodId",
       });
     })
     .catch((err) => {
@@ -93,7 +93,6 @@ exports.getIndex = (req, res, next) => {
 exports.getCart = (req, res, next) => {
   req.user
     .populate("cart.items.productId")
-    .execPopulate()
     .then((user) => {
       console.log("user", user);
       const products = user.cart.items;
@@ -149,7 +148,6 @@ exports.getOrders = (req, res, next) => {
 exports.postOrder = (req, res, next) => {
   req.user
     .populate("cart.items.productId")
-    .execPopulate()
     .then((user) => {
       const products = user.cart.items.map((i) => {
         return { product: { ...i.productId._doc }, quantity: i.quantity };
