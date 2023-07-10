@@ -16,22 +16,19 @@ This is an online shop web application built with Node.js. It provides a platfor
 ## Table of Contents
 
 - [Installation](#installation)
-- [Usage](#usage)
 - [Configuration](#configuration)
+- [Features](#features)
 - [API Documentation](#api-documentation)
+- [Dependencies](#dependencies)
 - [Project Background](#project-background)
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/maryamalsadat-tabatabaei/online-shop.git`
-2. Navigate to the project directory: `cd online-shop`
+1. Clone the repository: `git clone https://github.com/maryamalsadat-tabatabaei/Node.js-Online-Shop-Web-App.git`
+2. Navigate to the project directory: `cd Node.js-Online-Shop-Web-App`
 3. Install dependencies: `npm install`
-
-## Usage
-
-To run the project, use the following command:
-
-<pre><code>npm start</code></pre>
+4. Start the application: `npm start`
+5. Open your browser and visit http://localhost:3000
 
 ## Configuration
 
@@ -78,10 +75,10 @@ To configure the project, create .env file and add the following variables:
 ## Dependencies
 The following dependencies are used in this application:
 
-- express: Fast, unopinionated, minimalist web framework for Node.js.
-- mongoose: Elegant MongoDB object modeling for Node.js.
-- ejs: Embedded JavaScript templates for rendering views.
-- body-parser: Node.js body parsing middleware.
+- `express`: Fast, unopinionated, minimalist web framework for Node.js.
+- `mongoose`: Elegant MongoDB object modeling for Node.js.
+- `ejs`: Embedded JavaScript templates for rendering views.
+- `body-parser`: Node.js body parsing middleware.
 
 ## Project Background
 
